@@ -2,93 +2,124 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Among Us Pink Task - Effects</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Among Us Task - Responsive</title>
     <style>
+        :root {
+            --pink-main: #f06292;
+            --pink-dark: #ad1457;
+            --pink-border: #880e4f;
+            --screen-bg: #1a2125;
+            --success: #66bb6a;
+            --error: #ff1744;
+        }
+
         body {
-            background-color: #121212;
+            background-color: #0b0e11;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
+            touch-action: manipulation; /* Tối ưu cho cảm ứng điện thoại */
         }
 
-        /* Hiệu ứng rung khi sai */
-        @keyframes shake {
-            0% { transform: translate(1px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(3px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        .shake { animation: shake 0.5s; }
-
+        /* Container chính tự co giãn */
         .tablet {
-            background-color: #f06292;
-            padding: 25px;
-            border-radius: 15px;
-            border: 8px solid #880e4f;
-            box-shadow: 0 20px 0 #ad1457, 0 0 30px rgba(240, 98, 146, 0.4);
+            background-color: var(--pink-main);
+            width: 90%;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 20px;
+            border: 6px solid var(--pink-border);
+            box-shadow: 0 15px 0 var(--pink-dark), 0 10px 30px rgba(0,0,0,0.5);
             position: relative;
+            box-sizing: border-box;
         }
 
+        /* Đèn trạng thái */
+        .status-light {
+            width: 15px;
+            height: 15px;
+            background: #4a148c;
+            border-radius: 50%;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        /* Màn hình hiển thị */
         .screen {
-            background-color: #263238;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
-            border: 4px solid #4a148c;
-            min-width: 250px;
+            background-color: var(--screen-bg);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 4px solid #311b92;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         #display {
             color: #f48fb1;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            text-align: center;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px #f06292;
+            letter-spacing: 2px;
+            text-shadow: 0 0 8px rgba(244, 143, 177, 0.6);
+            white-space: nowrap;
+            transition: color 0.2s;
         }
 
+        /* Bàn phím */
         .keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 10px;
         }
 
         button {
             background: linear-gradient(145deg, #f06292, #ec407a);
             border: none;
-            padding: 20px;
-            font-size: 1.5rem;
+            padding: 18px 0;
+            font-size: 1.4rem;
+            font-weight: bold;
             color: white;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 0 6px #ad1457;
-            transition: all 0.05s;
+            box-shadow: 0 5px var(--pink-dark);
+            transition: transform 0.05s, box-shadow 0.05s;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         button:active {
-            box-shadow: 0 0 #ad1457;
-            transform: translateY(6px);
+            box-shadow: 0 0 var(--pink-dark);
+            transform: translateY(5px);
         }
 
-        .btn-clear { background: #d81b60; box-shadow: 0 6px #880e4f; }
-        .btn-enter { background: #66bb6a; box-shadow: 0 6px #2e7d32; }
+        .btn-clear { background: #d81b60; box-shadow: 0 5px #880e4f; }
+        .btn-enter { background: #43a047; box-shadow: 0 5px #1b5e20; }
 
-        .status-light {
-            width: 20px;
-            height: 20px;
-            background: #4a148c;
-            border-radius: 50%;
-            position: absolute;
-            top: 10px;
-            right: 25px;
+        /* Hiệu ứng rung */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-5px); }
+            40% { transform: translateX(5px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.4s ease-in-out; }
+
+        /* Responsive nhỏ hơn cho điện thoại cực ngắn */
+        @media (max-height: 600px) {
+            .tablet { padding: 10px; }
+            button { padding: 12px 0; }
+            .screen { margin: 10px 0; }
         }
     </style>
 </head>
@@ -122,25 +153,31 @@
     const panel = document.getElementById('panel');
     const light = document.getElementById('light');
 
-    // Hàm tạo âm thanh tít tít
-    function playSound(freq, type, duration) {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    // Khởi tạo AudioContext một lần duy nhất để tăng hiệu năng
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+
+    function playSound(freq, type, duration, vol = 0.1) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         const oscillator = audioCtx.createOscillator();
         const gainNode = audioCtx.createGain();
         
         oscillator.type = type;
         oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+        
         oscillator.connect(gainNode);
         gainNode.connect(audioCtx.destination);
         
         oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
         oscillator.stop(audioCtx.currentTime + duration);
     }
 
     function press(num) {
         if (currentInput.length < 8) {
-            playSound(600, 'square', 0.1); // Tiếng bấm nút
+            playSound(600, 'square', 0.1);
             currentInput += num;
             display.innerText = currentInput;
             display.style.color = "#f48fb1";
@@ -148,33 +185,44 @@
     }
 
     function clearDisplay() {
-        playSound(300, 'sawtooth', 0.1);
+        playSound(300, 'triangle', 0.1);
         currentInput = "";
         display.innerText = "_ _ _ _ _ _ _ _";
         display.style.color = "#f48fb1";
         light.style.background = "#4a148c";
+        light.style.boxShadow = "none";
         panel.classList.remove('shake');
     }
 
     function checkCode() {
         if (currentInput === correctCode) {
-            // Hiệu ứng thắng
+            // Thắng
             playSound(800, 'sine', 0.2);
             setTimeout(() => playSound(1200, 'sine', 0.4), 100);
             display.innerText = "ACCESS GRANTED";
-            display.style.color = "#66bb6a";
+            display.style.color = var(--success);
             light.style.background = "#00ff00";
             light.style.boxShadow = "0 0 15px #00ff00";
         } else {
-            // Hiệu ứng thua
-            playSound(150, 'square', 0.5);
+            // Thua
+            playSound(100, 'sawtooth', 0.4, 0.2);
             display.innerText = "WRONG CODE";
-            display.style.color = "#ff1744";
-            light.style.background = "#ff1744";
+            display.style.color = var(--error);
+            light.style.background = var(--error);
+            light.style.boxShadow = "0 0 15px #ff1744";
             panel.classList.add('shake');
-            setTimeout(clearDisplay, 800);
+            setTimeout(() => {
+                panel.classList.remove('shake');
+                clearDisplay();
+            }, 800);
         }
     }
+
+    // CSS Variables in JS helper
+    function getCSSVar(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+    const var = (name) => getCSSVar(name);
 </script>
 
 </body>
