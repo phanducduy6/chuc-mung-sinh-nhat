@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Among Us Task</title>
+    <title>Among Us Task - Pink Tablet</title>
     <style>
         :root {
             --pink-main: #f06292;
@@ -21,7 +21,7 @@
             margin: 0;
             font-family: Arial, sans-serif;
             overflow: hidden;
-            touch-action: manipulation;
+            perspective: 1000px; /* Tạo chiều sâu cho hiệu ứng bay */
         }
 
         .tablet {
@@ -33,6 +33,14 @@
             border: 6px solid var(--pink-border);
             box-shadow: 0 10px 0 var(--pink-dark);
             position: relative;
+            transition: all 0.8s cubic-bezier(0.47, 0, 0.745, 0.715); /* Mượt mà khi bay */
+        }
+
+        /* Hiệu ứng bay lượn biến mất */
+        .fly-away {
+            transform: scale(0) rotate(720deg) translateY(-500px);
+            opacity: 0;
+            pointer-events: none;
         }
 
         .status-light {
@@ -79,6 +87,7 @@
             border-radius: 12px;
             cursor: pointer;
             box-shadow: 0 5px var(--pink-dark);
+            transition: 0.1s;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -128,16 +137,10 @@
     const panel = document.getElementById('panel');
     const light = document.getElementById('light');
 
-    // Khởi tạo âm thanh
     let audioCtx = null;
-
     function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     function playSound(freq, type, duration) {
@@ -155,17 +158,15 @@
     }
 
     function press(num) {
-        initAudio(); // Kích hoạt audio khi nhấn
+        initAudio();
         if (currentInput.length < 8) {
             playSound(600, 'square', 0.1);
             currentInput += num;
             display.innerText = currentInput;
-            display.style.color = "#f48fb1";
         }
     }
 
     function clearDisplay() {
-        initAudio();
         currentInput = "";
         display.innerText = "_ _ _ _ _ _ _ _";
         display.style.color = "#f48fb1";
@@ -176,13 +177,22 @@
     function checkCode() {
         initAudio();
         if (currentInput === correctCode) {
+            // Chấp nhận mã
             playSound(800, 'sine', 0.2);
             display.innerText = "ACCESS GRANTED";
             display.style.color = "#66bb6a";
             light.style.background = "#00ff00";
+            
+            // Kích hoạt hiệu ứng bay sau 0.5s
             setTimeout(() => {
-                window.location.href = "home.html";
-            }, 1000);
+                panel.classList.add('fly-away');
+                
+                // Chuyển hướng sau khi máy tính đã bay mất (0.8s sau khi bắt đầu bay)
+                setTimeout(() => {
+                    window.location.href = "home.html";
+                }, 800);
+            }, 500);
+
         } else {
             playSound(150, 'sawtooth', 0.4);
             display.innerText = "WRONG CODE";
@@ -193,6 +203,5 @@
         }
     }
 </script>
-
 </body>
 </html>
