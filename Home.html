@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao diện 3 Nút - Pink Style</title>
+    <style>
+        /* Cấu hình nền và căn giữa */
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffe4e8; /* Màu hồng nhạt nền */
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        /* Container chứa 3 nút */
+        .button-container {
+            display: flex;
+            flex-direction: column; /* Xếp hàng dọc cho điện thoại */
+            gap: 20px; /* Khoảng cách giữa các nút */
+            width: 80%; /* Chiều rộng chiếm 80% màn hình */
+            max-width: 400px;
+        }
+
+        /* Kiểu dáng nút bấm */
+        .styled-button {
+            background: linear-gradient(135deg, #ff80ab, #f06292);
+            color: white;
+            border: none;
+            padding: 18px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(240, 98, 146, 0.3);
+            transition: all 0.3s ease;
+            text-align: center;
+            text-decoration: none; /* Nếu dùng thẻ <a> */
+            display: block;
+        }
+
+        /* Hiệu ứng khi chạm/click */
+        .styled-button:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(240, 98, 146, 0.5);
+            background: linear-gradient(135deg, #f06292, #d81b60);
+        }
+
+        /* Hiệu ứng bóng đổ nhẹ cho tiêu đề */
+        h1 {
+            color: #ad1457;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="button-container">
+        <h1> Xin Vui Lòng Chọn</h1>
+        
+        <button class="styled-button" onclick="alert('1')">Hiệu ứng 1</button>
+        <button class="styled-button" onclick="alert('2')">Hiệu ứng 2</button>
+        <button class="styled-button" onclick="alert('3')">Hiệu ứng 3</button>
+    </div>
+
+</body>
+</html>
