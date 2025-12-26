@@ -2,16 +2,14 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Among Us Task - Responsive</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Among Us Task</title>
     <style>
         :root {
             --pink-main: #f06292;
             --pink-dark: #ad1457;
             --pink-border: #880e4f;
             --screen-bg: #1a2125;
-            --success: #66bb6a;
-            --error: #ff1744;
         }
 
         body {
@@ -21,40 +19,34 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: Arial, sans-serif;
             overflow: hidden;
-            touch-action: manipulation; /* Tối ưu cho cảm ứng điện thoại */
+            touch-action: manipulation;
         }
 
-        /* Container chính tự co giãn */
         .tablet {
             background-color: var(--pink-main);
             width: 90%;
-            max-width: 400px;
+            max-width: 360px;
             padding: 20px;
             border-radius: 20px;
             border: 6px solid var(--pink-border);
-            box-shadow: 0 15px 0 var(--pink-dark), 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 0 var(--pink-dark);
             position: relative;
-            box-sizing: border-box;
         }
 
-        /* Đèn trạng thái */
         .status-light {
-            width: 15px;
-            height: 15px;
+            width: 14px;
+            height: 14px;
             background: #4a148c;
             border-radius: 50%;
             position: absolute;
             top: 15px;
             right: 20px;
-            transition: background 0.3s, box-shadow 0.3s;
         }
 
-        /* Màn hình hiển thị */
         .screen {
             background-color: var(--screen-bg);
-            padding: 15px;
             border-radius: 10px;
             margin: 20px 0;
             border: 4px solid #311b92;
@@ -62,20 +54,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
         }
 
         #display {
             color: #f48fb1;
-            font-size: 1.8rem;
+            font-size: 1.6rem;
             font-weight: bold;
             letter-spacing: 2px;
-            text-shadow: 0 0 8px rgba(244, 143, 177, 0.6);
-            white-space: nowrap;
-            transition: color 0.2s;
         }
 
-        /* Bàn phím */
         .keypad {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -83,44 +70,32 @@
         }
 
         button {
-            background: linear-gradient(145deg, #f06292, #ec407a);
+            background: #f06292;
             border: none;
-            padding: 18px 0;
-            font-size: 1.4rem;
+            padding: 20px 0;
+            font-size: 1.5rem;
             font-weight: bold;
             color: white;
             border-radius: 12px;
             cursor: pointer;
             box-shadow: 0 5px var(--pink-dark);
-            transition: transform 0.05s, box-shadow 0.05s;
-            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         button:active {
-            box-shadow: 0 0 var(--pink-dark);
-            transform: translateY(5px);
+            box-shadow: 0 2px var(--pink-dark);
+            transform: translateY(3px);
         }
 
         .btn-clear { background: #d81b60; box-shadow: 0 5px #880e4f; }
         .btn-enter { background: #43a047; box-shadow: 0 5px #1b5e20; }
 
-        /* Hiệu ứng rung */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            20% { transform: translateX(-5px); }
-            40% { transform: translateX(5px); }
-            60% { transform: translateX(-5px); }
-            80% { transform: translateX(5px); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
-        .shake { animation: shake 0.4s ease-in-out; }
-
-        /* Responsive nhỏ hơn cho điện thoại cực ngắn */
-        @media (max-height: 600px) {
-            .tablet { padding: 10px; }
-            button { padding: 12px 0; }
-            .screen { margin: 10px 0; }
-        }
+        .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
 <body>
@@ -153,29 +128,34 @@
     const panel = document.getElementById('panel');
     const light = document.getElementById('light');
 
-    // Khởi tạo AudioContext một lần duy nhất để tăng hiệu năng
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    const audioCtx = new AudioContext();
+    // Khởi tạo âm thanh
+    let audioCtx = null;
 
-    function playSound(freq, type, duration, vol = 0.1) {
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        
-        oscillator.type = type;
-        oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        
-        gainNode.gain.setValueAtTime(vol, audioCtx.currentTime);
-        gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-        
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-        
-        oscillator.start();
-        oscillator.stop(audioCtx.currentTime + duration);
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    function playSound(freq, type, duration) {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
     }
 
     function press(num) {
+        initAudio(); // Kích hoạt audio khi nhấn
         if (currentInput.length < 8) {
             playSound(600, 'square', 0.1);
             currentInput += num;
@@ -185,44 +165,33 @@
     }
 
     function clearDisplay() {
-        playSound(300, 'triangle', 0.1);
+        initAudio();
         currentInput = "";
         display.innerText = "_ _ _ _ _ _ _ _";
         display.style.color = "#f48fb1";
         light.style.background = "#4a148c";
-        light.style.boxShadow = "none";
         panel.classList.remove('shake');
     }
 
     function checkCode() {
+        initAudio();
         if (currentInput === correctCode) {
-            // Thắng
             playSound(800, 'sine', 0.2);
-            setTimeout(() => playSound(1200, 'sine', 0.4), 100);
             display.innerText = "ACCESS GRANTED";
-            display.style.color = var(--success);
+            display.style.color = "#66bb6a";
             light.style.background = "#00ff00";
-            light.style.boxShadow = "0 0 15px #00ff00";
-        } else {
-            // Thua
-            playSound(100, 'sawtooth', 0.4, 0.2);
-            display.innerText = "WRONG CODE";
-            display.style.color = var(--error);
-            light.style.background = var(--error);
-            light.style.boxShadow = "0 0 15px #ff1744";
-            panel.classList.add('shake');
             setTimeout(() => {
-                panel.classList.remove('shake');
-                clearDisplay();
-            }, 800);
+                window.location.href = "home.html";
+            }, 1000);
+        } else {
+            playSound(150, 'sawtooth', 0.4);
+            display.innerText = "WRONG CODE";
+            display.style.color = "#ff1744";
+            light.style.background = "#ff1744";
+            panel.classList.add('shake');
+            setTimeout(clearDisplay, 800);
         }
     }
-
-    // CSS Variables in JS helper
-    function getCSSVar(name) {
-        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    }
-    const var = (name) => getCSSVar(name);
 </script>
 
 </body>
